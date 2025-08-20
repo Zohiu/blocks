@@ -50,13 +50,10 @@
 
 
     <dependencies>
-    
-
         <dependency>
-            <groupId>com.github.almasb</groupId>
-            <artifactId>fxgl</artifactId>
-            <version>21.1</version>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.30.0</version>
         </dependency>
-
     </dependencies>
 </project>

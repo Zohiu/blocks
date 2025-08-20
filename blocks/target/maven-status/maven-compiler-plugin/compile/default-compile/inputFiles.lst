@@ -1,5 +1,12 @@
-c:\Users\3287641\OneDrive - EDEKA\Desktop\java\blocks\src\main\java\de\zohiu\Game.java
-c:\Users\3287641\OneDrive - EDEKA\Desktop\java\blocks\src\main\java\de\zohiu\GameLoop.java
-c:\Users\3287641\OneDrive - EDEKA\Desktop\java\blocks\src\main\java\de\zohiu\Input.java
-c:\Users\3287641\OneDrive - EDEKA\Desktop\java\blocks\src\main\java\de\zohiu\Main.java
-c:\Users\3287641\OneDrive - EDEKA\Desktop\java\blocks\src\main\java\de\zohiu\UserInterface.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/Game.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/Input.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/Main.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/Renderer.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/graphics/Canvas.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/graphics/Color.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/graphics/Ellipse.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/graphics/Line.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/graphics/Picture.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/graphics/Rectangle.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/graphics/Shape.java
+/home/samy/Development/IdeaProjects/java/blocks/src/main/java/de/zohiu/graphics/Text.java
