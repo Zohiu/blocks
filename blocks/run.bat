@@ -1,0 +1,1 @@
+C:\jdk\OpenJDK-24\bin\java -jar .\target\blocks-1.0-SNAPSHOT.jar
