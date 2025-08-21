@@ -4,8 +4,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
+
 
 public class Main {
     private static Game game = new Game();
@@ -26,6 +25,13 @@ public class Main {
         input.setUpdate(() -> { renderer.update(game.gameState); });
         input.start();
 
+        game.setGameOverCallback(() -> {
+            input.stop();
+            currentTask.cancel(true); 
+            renderer.update(game.gameState);
+            System.exit(0);
+        });
+
         scheduleTask(250);
     }
 
@@ -41,7 +47,6 @@ public class Main {
     }
 
     public static void tick() {
-        System.out.print("tick");
         game.update();
         renderer.update(game.gameState);
     }

@@ -27,6 +27,8 @@ public class Input {
     public void setQuickDrop(Runnable quickDrop) { this.quickDrop = quickDrop; }
     public void setInstaDrop(Runnable instaDrop) { this.instaDrop = instaDrop; }
 
+    AtomicBoolean running;
+
     public Input() {
         Terminal terminal;
         try {
@@ -38,6 +40,7 @@ public class Input {
         }
         terminal.enterRawMode();
 
+        running = new AtomicBoolean(true);
         reader = terminal.reader();
         executor = Executors.newSingleThreadExecutor();
     }
@@ -46,7 +49,7 @@ public class Input {
         executor.submit(() -> {
             try {
                 // Continuously read input
-                while (true) {
+                while (running.get()) {
                     int c = reader.read(100);
                     if (c != -1) {
                         boolean updateNeeded = true;
@@ -62,5 +65,9 @@ public class Input {
                 }
             } catch (IOException ignored) { }
         });
+    }
+
+    public void stop() {
+        running.set(false);
     }
 }

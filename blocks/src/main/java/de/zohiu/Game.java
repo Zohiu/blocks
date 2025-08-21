@@ -1,6 +1,10 @@
 package de.zohiu;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class Game {
     private enum Shape {
@@ -71,7 +75,15 @@ public class Game {
         private List<List<Integer>> board;
         public Block currentBlock;
 
+        private boolean running;
+
+        public boolean isRunning() {
+            return running;
+        }
+
         public State(int width, int height) {
+            running = true;
+
             boardHeight = height;
             boardWidth = width;
 
@@ -83,8 +95,9 @@ public class Game {
             spawnBlock();
         }
 
-        public void spawnBlock() {
+        public boolean spawnBlock() {
             currentBlock = new Block(this, Shape.random());
+            return false;
         }
 
         private void clearFullRows() {
@@ -106,44 +119,58 @@ public class Game {
         }
 
         private void placeBlock() {
-            board = getVisualBoard();
+            board = getBoardWithBlock();
 
             clearFullRows();
             spawnBlock();
 
             if (gameState.currentBlock.detectOverlap()) {
-                throw new RuntimeException("GAME OVER!");
+                board = getBoardWithBlock();
+                gameOver.run();
             }
         }
 
-        // Falling blocks are not part of the board. This returns a copy of the board including falling blocks.
-        public List<List<Integer>> getVisualBoard(boolean includeGhost) {
-            // deep copy!
+        public List<List<Integer>> copyBoard() {
             List<List<Integer>> newBoard = new ArrayList<>();
             for (List<Integer> row : board) {
                 List<Integer> newRow = new ArrayList<>(row);
                 newBoard.add(newRow);
             }
+            return newBoard;
+        }
 
-            // Add block and ghost to board
+        // Falling blocks are not part of the board. This returns a copy of the board including falling blocks.
+        public List<List<Integer>> getBoardWithBlock() {
+            List<List<Integer>> newBoard = copyBoard();
             Block.Location location = currentBlock.location;
+
+            for (int row = 0; row < currentBlock.getShape().length; row++) {
+                for (int column = 0; column < currentBlock.getShape()[row].length; column++) {
+                    int blockVal = currentBlock.getShape()[row][column];
+                    if (blockVal > 0) {
+                        newBoard.get(location.y + row).set(location.x + column, blockVal * currentBlock.color);
+                    }
+                }
+            }
+
+            return newBoard;
+        }
+
+        // The visual board contains extras like ghost blocks
+        public List<List<Integer>> getVisualBoard() {
+            List<List<Integer>> newBoard = getBoardWithBlock();
             Block.Location ghostLocation = currentBlock.getGhostLocation();
 
             for (int row = 0; row < currentBlock.getShape().length; row++) {
                 for (int column = 0; column < currentBlock.getShape()[row].length; column++) {
                     int blockVal = currentBlock.getShape()[row][column];
                     if (blockVal > 0) {
-                        if (includeGhost) newBoard.get(ghostLocation.y + row).set(ghostLocation.x + column, -1);
-                        newBoard.get(location.y + row).set(location.x + column, blockVal * currentBlock.color);
+                        int boardVal = newBoard.get(ghostLocation.y + row).get(ghostLocation.x + column);
+                        if (boardVal == 0) newBoard.get(ghostLocation.y + row).set(ghostLocation.x + column, -1);
                     }
                 }
             }
             return newBoard;
-        }
-
-        // The ghost only matters for rendering, so it's not included by default.
-        public List<List<Integer>> getVisualBoard() {
-            return getVisualBoard(false);
         }
     }
 
@@ -175,8 +202,8 @@ public class Game {
         }
 
         private boolean detectOverlap() {
-            for (int row = 0; row < getShape().length; row++) {
-                for (int column = 0; column < getShape()[row].length; column++) {
+            for (int row = getShape().length - 1; row >= 0; row--) {
+                for (int column = getShape()[row].length - 1; column >= 0; column--) {
                     int blockVal = getShape()[row][column];
                     if (blockVal > 0) {
                         // Wall overlap
@@ -196,11 +223,9 @@ public class Game {
             int yBefore = location.y;
             while (!detectOverlap()) {
                 location.y++;
-                System.out.println(location.y);
             }
-            int yAfter = location.y - 1;
+            int yAfter = Math.max(0, location.y - 1);
             location.y = yBefore;
-            System.out.println("DROPPED");
             return new Location(location.x, yAfter);
         }
 
@@ -235,7 +260,12 @@ public class Game {
         }
     }
 
-    State gameState;
+    public State gameState;
+    private Runnable gameOver;
+
+    public void setGameOverCallback(Runnable gameOver) {
+        this.gameOver = gameOver;
+    }
 
     public Game() {
         gameState = new State(10, 24);

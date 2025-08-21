@@ -41,13 +41,13 @@ class Renderer {
     }
 
     public static Color[] colors = {
-        Color.BLACK, Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.MAGENTA, Color.CYAN,
-        Color.BLACK_BRIGHT, Color.RED_BRIGHT, Color.GREEN_BRIGHT, Color.YELLOW_BRIGHT, Color.BLUE_BRIGHT, Color.MAGENTA_BRIGHT, Color.CYAN_BRIGHT,
+        Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.MAGENTA, Color.CYAN,
+        Color.RED_BRIGHT, Color.GREEN_BRIGHT, Color.YELLOW_BRIGHT, Color.BLUE_BRIGHT, Color.MAGENTA_BRIGHT, Color.CYAN_BRIGHT,
     };
 
     public void update(Game.State gameState) {
         StringBuilder output = new StringBuilder("\033[H\033[2J");
-        for (List<Integer> row : gameState.getVisualBoard(true)) {
+        for (List<Integer> row : gameState.getVisualBoard()) {
             output.append("█");
             for (int value : row) {
                 if (value > 0) {
