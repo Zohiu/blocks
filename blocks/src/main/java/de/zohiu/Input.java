@@ -1,36 +1,28 @@
 package de.zohiu;
 
-import org.jline.terminal.Terminal;
-import org.jline.terminal.TerminalBuilder;
-import org.jline.utils.NonBlockingReader;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Input {
-    private Runnable update;
-    private Runnable moveLeft;
-    private Runnable moveRight;
-    private Runnable rotate;
-    private Runnable quickDrop;
-    private Runnable instaDrop;
+import org.jline.keymap.BindingReader;
+import org.jline.keymap.KeyMap;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.NonBlockingReader;
 
-    private final NonBlockingReader reader;
+import org.jline.utils.InfoCmp.Capability;
+
+
+public final class Input {
+    private final Terminal terminal;
     private final ExecutorService executor;
-
-    public void setUpdate(Runnable update) { this.update = update; }
-    public void setMoveLeft(Runnable moveLeft) { this.moveLeft = moveLeft; }
-    public void setMoveRight(Runnable moveRight) { this.moveRight = moveRight; }
-    public void setRotate(Runnable rotate) { this.rotate = rotate; }
-    public void setQuickDrop(Runnable quickDrop) { this.quickDrop = quickDrop; }
-    public void setInstaDrop(Runnable instaDrop) { this.instaDrop = instaDrop; }
 
     AtomicBoolean running;
 
     public Input() {
-        Terminal terminal;
         try {
             terminal = TerminalBuilder.builder()
                     .name("Blocks")
@@ -41,31 +33,49 @@ public class Input {
         terminal.enterRawMode();
 
         running = new AtomicBoolean(true);
-        reader = terminal.reader();
         executor = Executors.newSingleThreadExecutor();
         start();
     }
 
+    private static final int LEFT_ARROW = 1000;
+    private static final int RIGHT_ARROW = 1001;
+    private static final int UP_ARROW = 1002;
+    private static final int DOWN_ARROW = 1003;
+
     public void start() {
         executor.submit(() -> {
-            try {
-                // Continuously read input
-                while (running.get()) {
-                    int c = reader.read(100);
-                    if (c != -1) {
-                        boolean updateNeeded = true;
+            BindingReader reader = new BindingReader(terminal.reader());
 
-                        if (c == 'a') Main.game.gameState.currentBlock.moveLeft();
-                        else if (c == 'd') Main.game.gameState.currentBlock.moveRight();
-                        else if (c == 'w') Main.game.gameState.currentBlock.rotate();
-                        else if (c == ' ') Main.game.gameState.currentBlock.instaDrop();
-                        else if (c == 'f') Main.game.gameState.holdBlock();
-                        else updateNeeded = false;
+            KeyMap<Integer> keyMap = new KeyMap<>();
+            keyMap.bind((int)'a', "a");
+            keyMap.bind((int)'d', "d");
+            keyMap.bind((int)'w', "w");
+            keyMap.bind((int)'s', "s");
+            keyMap.bind((int)' ', " ");
+            keyMap.bind((int)'f', "f");
+            keyMap.bind((int)'.', ".");
 
-                        if (updateNeeded) Main.renderer.update(Main.game.gameState);
-                    }
+            keyMap.setNomatch(null); // fallback to raw char
+
+            while (running.get()) {
+                Integer key = reader.readBinding(keyMap);
+
+                boolean updateNeeded = true;
+
+                switch (key) {
+                    case (int) 'a' -> Main.game.gameState.currentBlock.moveLeft();
+                    case (int) 'd' -> Main.game.gameState.currentBlock.moveRight();
+                    case (int) '.' -> Main.game.gameState.currentBlock.rotate();
+                    case (int) ' ' -> Main.game.gameState.currentBlock.instaDrop();
+                    case (int) 's' -> {} // quick drop
+                    case (int) 'w' -> Main.game.gameState.holdBlock();
+                    default -> updateNeeded = false;
                 }
-            } catch (IOException ignored) { }
+
+                if (updateNeeded) {
+                    Main.renderer.update(Main.game.gameState);
+                }
+            }
         });
     }
 

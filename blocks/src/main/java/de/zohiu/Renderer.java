@@ -50,7 +50,9 @@ class Renderer {
     public void update(Game.State gameState) {
         // Sidebar
         Queue<String> sidebarLines = new LinkedList<>();
+        sidebarLines.add("Score: <not implemented>");
         sidebarLines.add("Holding:");
+        sidebarLines.add("");
         if (gameState.holdingBlock != null) {
             for (int[] row : gameState.holdingBlock.getShape()) {
                 StringBuilder line = new StringBuilder();

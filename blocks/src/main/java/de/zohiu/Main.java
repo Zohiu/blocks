@@ -13,7 +13,6 @@ public class Main {
     private static Input input = new Input();
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private static ScheduledFuture<?> currentTask;
-    private static long gameStart = System.nanoTime();
 
     public static void main(String[] args) {
         game.setGameOverCallback(() -> {

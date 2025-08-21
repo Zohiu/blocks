@@ -76,15 +76,7 @@ public class Game {
         public Block currentBlock;
         public Block holdingBlock;
 
-        private boolean running;
-
-        public boolean isRunning() {
-            return running;
-        }
-
-        public State(int width, int height) {
-            running = true;
-
+        private State(int width, int height) {
             boardHeight = height;
             boardWidth = width;
 
@@ -96,7 +88,7 @@ public class Game {
             spawnBlock();
         }
 
-        public boolean spawnBlock() {
+        public final boolean spawnBlock() {
             currentBlock = new Block(this, Shape.random());
             return false;
         }
@@ -186,7 +178,7 @@ public class Game {
         }
     }
 
-    public class Block {
+    public final class Block {
         public static class Location {
             public int x;
             public int y;
@@ -205,7 +197,7 @@ public class Game {
         private Location location;
         private final State state;
 
-        public Block(State state, Shape shape) {
+        private Block(State state, Shape shape) {
             this.state = state;
             this.shape = shape;
             resetLocation();
