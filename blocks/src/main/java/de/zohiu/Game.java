@@ -74,6 +74,7 @@ public class Game {
 
         private List<List<Integer>> board;
         public Block currentBlock;
+        public Block holdingBlock;
 
         private boolean running;
 
@@ -128,6 +129,17 @@ public class Game {
                 board = getBoardWithBlock();
                 gameOver.run();
             }
+        }
+
+        public void holdBlock() {
+            Block previousHolding = holdingBlock;
+            holdingBlock = currentBlock;
+            holdingBlock.resetLocation();
+            holdingBlock.resetRotation();
+            if (previousHolding != null) currentBlock = previousHolding;
+            else spawnBlock();
+
+
         }
 
         public List<List<Integer>> copyBoard() {
@@ -190,14 +202,24 @@ public class Game {
 
         private final Shape shape;
         private int currentRotation = 0;
-        private final Location location;
+        private Location location;
+        private final State state;
 
         public Block(State state, Shape shape) {
+            this.state = state;
             this.shape = shape;
+            resetLocation();
+        }
+
+        public void resetLocation() {
             this.location = new Location((state.boardWidth / 2) - (getShape()[0].length / 2), 0);
         }
 
-        private int[][] getShape() {
+        public void resetRotation() {
+            this.currentRotation = 0;
+        }
+
+        public int[][] getShape() {
             return shape.rotations[currentRotation];
         }
 

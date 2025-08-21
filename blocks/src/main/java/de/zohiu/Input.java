@@ -43,6 +43,7 @@ public class Input {
         running = new AtomicBoolean(true);
         reader = terminal.reader();
         executor = Executors.newSingleThreadExecutor();
+        start();
     }
 
     public void start() {
@@ -54,13 +55,14 @@ public class Input {
                     if (c != -1) {
                         boolean updateNeeded = true;
 
-                        if (c == 'a') moveLeft.run();
-                        else if (c == 'd') moveRight.run();
-                        else if (c == 'w') rotate.run();
-                        else if (c == ' ') instaDrop.run();
+                        if (c == 'a') Main.game.gameState.currentBlock.moveLeft();
+                        else if (c == 'd') Main.game.gameState.currentBlock.moveRight();
+                        else if (c == 'w') Main.game.gameState.currentBlock.rotate();
+                        else if (c == ' ') Main.game.gameState.currentBlock.instaDrop();
+                        else if (c == 'f') Main.game.gameState.holdBlock();
                         else updateNeeded = false;
 
-                        if (updateNeeded) update.run();
+                        if (updateNeeded) Main.renderer.update(Main.game.gameState);
                     }
                 }
             } catch (IOException ignored) { }

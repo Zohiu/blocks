@@ -1,6 +1,8 @@
 package de.zohiu;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 
 class Renderer {
@@ -46,7 +48,22 @@ class Renderer {
     };
 
     public void update(Game.State gameState) {
+        // Sidebar
+        Queue<String> sidebarLines = new LinkedList<>();
+        sidebarLines.add("Holding:");
+        if (gameState.holdingBlock != null) {
+            for (int[] row : gameState.holdingBlock.getShape()) {
+                StringBuilder line = new StringBuilder();
+                for (int value : row) {
+                    if (value > 0) line.append(colors[gameState.holdingBlock.color - 1]).append("  ").append("\u001B[0m");
+                    else line.append("  ");
+                }
+                sidebarLines.add(line.toString());
+            }
+        }
+
         StringBuilder output = new StringBuilder("\033[H\033[2J");
+        // Game board
         for (List<Integer> row : gameState.getVisualBoard()) {
             output.append("█");
             for (int value : row) {
@@ -58,7 +75,10 @@ class Renderer {
                     output.append("  ");  // Color 0 means no block at this location.
                 }
             }
-            output.append("█\n");
+            output.append("█ ");
+
+            if (!sidebarLines.isEmpty()) output.append(sidebarLines.remove());
+            output.append("\u001B[0m\n");
         }
 
         System.out.print(output);

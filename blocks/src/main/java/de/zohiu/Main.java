@@ -7,24 +7,15 @@ import java.util.concurrent.TimeUnit;
 
 
 public class Main {
-    private static Game game = new Game();
-    private static Renderer renderer = new Renderer();
-    private static Input input = new Input();
+    public static Game game = new Game();
+    public static Renderer renderer = new Renderer();
 
+    private static Input input = new Input();
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private static ScheduledFuture<?> currentTask;
-    static long gameStart = System.nanoTime();
+    private static long gameStart = System.nanoTime();
 
     public static void main(String[] args) {
-        input.setMoveLeft(() -> { game.gameState.currentBlock.moveLeft(); });
-        input.setMoveRight(() -> { game.gameState.currentBlock.moveRight(); });
-        input.setRotate(() -> { game.gameState.currentBlock.rotate(); });
-        input.setQuickDrop(() -> { });
-        input.setInstaDrop(() -> { game.gameState.currentBlock.instaDrop(); });
-
-        input.setUpdate(() -> { renderer.update(game.gameState); });
-        input.start();
-
         game.setGameOverCallback(() -> {
             input.stop();
             currentTask.cancel(true); 
