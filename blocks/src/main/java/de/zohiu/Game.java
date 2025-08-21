@@ -266,11 +266,16 @@ public class Game {
             if (detectOverlap()) location.x--;
         }
 
-        public void rotate() {
+        public void rotate(int direction) {
             int rotationBefore = currentRotation;
-            currentRotation++;
+            currentRotation += direction;
             if (currentRotation >= shape.rotations.length) currentRotation = 0;
-            if (detectOverlap()) currentRotation = rotationBefore;
+            if (currentRotation < 0) currentRotation = shape.rotations.length - 1;
+            if (detectOverlap()){
+                currentRotation = rotationBefore;
+
+                // Wall kicks
+            }
         }
     }
 

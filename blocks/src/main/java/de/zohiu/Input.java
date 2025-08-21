@@ -7,13 +7,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jline.keymap.BindingReader;
 import org.jline.keymap.KeyMap;
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.jline.utils.NonBlockingReader;
-
-import org.jline.utils.InfoCmp.Capability;
 
 
 public final class Input {
@@ -37,11 +32,6 @@ public final class Input {
         start();
     }
 
-    private static final int LEFT_ARROW = 1000;
-    private static final int RIGHT_ARROW = 1001;
-    private static final int UP_ARROW = 1002;
-    private static final int DOWN_ARROW = 1003;
-
     public void start() {
         executor.submit(() -> {
             BindingReader reader = new BindingReader(terminal.reader());
@@ -54,6 +44,7 @@ public final class Input {
             keyMap.bind((int)' ', " ");
             keyMap.bind((int)'f', "f");
             keyMap.bind((int)'.', ".");
+            keyMap.bind((int)',', ",");
 
             keyMap.setNomatch(null); // fallback to raw char
 
@@ -65,7 +56,8 @@ public final class Input {
                 switch (key) {
                     case (int) 'a' -> Main.game.gameState.currentBlock.moveLeft();
                     case (int) 'd' -> Main.game.gameState.currentBlock.moveRight();
-                    case (int) '.' -> Main.game.gameState.currentBlock.rotate();
+                    case (int) '.' -> Main.game.gameState.currentBlock.rotate(1);
+                    case (int) ',' -> Main.game.gameState.currentBlock.rotate(-1);
                     case (int) ' ' -> Main.game.gameState.currentBlock.instaDrop();
                     case (int) 's' -> {} // quick drop
                     case (int) 'w' -> Main.game.gameState.holdBlock();
