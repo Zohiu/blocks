@@ -7,28 +7,15 @@ import java.util.Queue;
 
 class Renderer {
     enum Color {
-        //Color end string, color reset
         RESET("\033[0m"),
 
-        // Dark BG → Bright contrasting FG
-        BLACK   ("\033[0;97m\033[40m"),   // Bright White on Black
-        RED     ("\033[0;97m\033[41m"),   // Bright White on Red
-        GREEN   ("\033[0;97m\033[42m"),   // Bright White on Green
-        YELLOW  ("\033[0;30m\033[43m"),   // Black on Yellow
-        BLUE    ("\033[0;97m\033[44m"),   // Bright White on Blue
-        MAGENTA ("\033[0;97m\033[45m"),   // Bright White on Magenta
-        CYAN    ("\033[0;30m\033[46m"),   // Black on Cyan
-        WHITE   ("\033[0;30m\033[47m"),   // Black on White
-
-        // Bright BG → Dark contrasting FG
-        BLACK_BRIGHT   ("\033[0;30m\033[0;100m"),  // Black on Bright Black (Gray BG)
-        RED_BRIGHT     ("\033[0;30m\033[0;101m"),  // Black on Bright Red
-        GREEN_BRIGHT   ("\033[0;30m\033[0;102m"),  // Black on Bright Green
-        YELLOW_BRIGHT  ("\033[0;30m\033[0;103m"),  // Black on Bright Yellow
-        BLUE_BRIGHT    ("\033[0;30m\033[0;104m"),  // Black on Bright Blue
-        MAGENTA_BRIGHT ("\033[0;30m\033[0;105m"),  // Black on Bright Magenta
-        CYAN_BRIGHT    ("\033[0;30m\033[0;106m");  // Black on Bright Cyan
-
+        CYAN("\033[0;30m\033[48;2;0;255;255m"),       // Cyan
+        YELLOW("\033[0;30m\033[48;2;255;255;0m"),       // Yellow
+        PURPLE("\033[0;97m\033[48;2;160;0;240m"),       // Purple
+        GREEN("\033[0;30m\033[48;2;0;255;0m"),         // Green
+        RED("\033[0;97m\033[48;2;255;0;0m"),         // Red
+        BLUE("\033[0;97m\033[48;2;0;0;255m"),         // Blue
+        ORANGE("\033[0;30m\033[48;2;255;165;0m");       // Orange
 
         private final String code;
 
@@ -43,8 +30,7 @@ class Renderer {
     }
 
     public static Color[] colors = {
-        Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.MAGENTA, Color.CYAN,
-        Color.RED_BRIGHT, Color.GREEN_BRIGHT, Color.YELLOW_BRIGHT, Color.BLUE_BRIGHT, Color.MAGENTA_BRIGHT, Color.CYAN_BRIGHT,
+        Color.CYAN, Color.BLUE, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.PURPLE, Color.RED,
     };
 
     public void update(Game.State gameState) {
@@ -58,7 +44,7 @@ class Renderer {
             for (int[] row : gameState.nextBlock.getShape()) {
                 StringBuilder line = new StringBuilder();
                 for (int value : row) {
-                    if (value > 0) line.append(colors[gameState.nextBlock.color - 1]).append("  ").append("\u001B[0m");
+                    if (value > 0) line.append(colors[value - 1]).append("  ").append("\u001B[0m");
                     else line.append("  ");
                 }
                 sidebarLines.add(line.toString());
@@ -71,7 +57,7 @@ class Renderer {
             for (int[] row : gameState.holdingBlock.getShape()) {
                 StringBuilder line = new StringBuilder();
                 for (int value : row) {
-                    if (value > 0) line.append(colors[gameState.holdingBlock.color - 1]).append("  ").append("\u001B[0m");
+                    if (value > 0) line.append(colors[value - 1]).append("  ").append("\u001B[0m");
                     else line.append("  ");
                 }
                 sidebarLines.add(line.toString());
