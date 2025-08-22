@@ -36,7 +36,7 @@ class Renderer {
     public void update(Game.State gameState) {
         // Sidebar
         Queue<String> sidebarLines = new LinkedList<>();
-        sidebarLines.add("Score: <not implemented>");
+        sidebarLines.add("Score: " + gameState.score);
 
         sidebarLines.add("Next:");
         sidebarLines.add("");

@@ -71,6 +71,8 @@ public class Game {
     public class State {
         public int boardHeight;
         public int boardWidth;
+        public int score;
+        public int level;
 
         private List<List<Integer>> board;
         public Block currentBlock;
@@ -80,6 +82,8 @@ public class Game {
         private State(int width, int height) {
             boardHeight = height;
             boardWidth = width;
+            score = 0;
+            level = 1;
 
             board = new ArrayList<>();
             for (int i = 0; i < height; i++) {
@@ -97,12 +101,14 @@ public class Game {
         }
 
         private void clearFullRows() {
+            int rowClearAmount = 0;
             boolean rowCleared;
             do {
                 rowCleared = false;
                 for (int row = 0; row < boardHeight; row++) {
                     List<Integer> rowVal = board.get(row);
                     if (rowVal.stream().allMatch((val -> val > 0))) {
+                        rowClearAmount++;
                         // Move above rows down
                         for (int rowAbove = row - 1; rowAbove >= 0; rowAbove--) {
                             board.set(rowAbove + 1, board.get(rowAbove));
@@ -112,6 +118,10 @@ public class Game {
                     }
                 }
             } while (rowCleared);
+
+            if (rowClearAmount > 0) {
+                score += Game.lineClearScores[rowClearAmount - 1] * level;
+            }
         }
 
         private void placeBlock() {
@@ -298,6 +308,7 @@ public class Game {
 
     public State gameState;
     private Runnable gameOver;
+    private static final int[] lineClearScores = new int[] { 40, 100, 300, 1200 };
 
     public void setGameOverCallback(Runnable gameOver) {
         this.gameOver = gameOver;
