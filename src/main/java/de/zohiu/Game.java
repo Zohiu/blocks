@@ -190,6 +190,14 @@ public class Game {
                 this.x = x;
                 this.y = y;
             }
+
+            public Location clone() {
+                return new Location(this.x, this.y);
+            }
+
+            public Location offset(int x, int y) {
+                return new Location(this.x + x, this.y + y);
+            }
         }
 
         private final Shape shape;
@@ -268,13 +276,22 @@ public class Game {
 
         public void rotate(int direction) {
             int rotationBefore = currentRotation;
-            currentRotation += direction;
-            if (currentRotation >= shape.rotations.length) currentRotation = 0;
-            if (currentRotation < 0) currentRotation = shape.rotations.length - 1;
-            if (detectOverlap()){
-                currentRotation = rotationBefore;
 
-                // Wall kicks
+            // TGM rotation (basic wall kicks)
+            Location startLocation = this.location.clone();
+            for (Location newLocation : new Location[] {
+                    startLocation, startLocation.offset(-1, 0), startLocation.offset(1, 0)
+            }) {
+                location = newLocation;
+                currentRotation += direction;
+                if (currentRotation >= shape.rotations.length) currentRotation = 0;
+                if (currentRotation < 0) currentRotation = shape.rotations.length - 1;
+
+                if (!detectOverlap()){
+                    break;
+                }
+
+                currentRotation = rotationBefore;
             }
         }
     }
