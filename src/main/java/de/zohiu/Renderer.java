@@ -51,6 +51,20 @@ class Renderer {
         // Sidebar
         Queue<String> sidebarLines = new LinkedList<>();
         sidebarLines.add("Score: <not implemented>");
+
+        sidebarLines.add("Next:");
+        sidebarLines.add("");
+        if (gameState.nextBlock != null) {
+            for (int[] row : gameState.nextBlock.getShape()) {
+                StringBuilder line = new StringBuilder();
+                for (int value : row) {
+                    if (value > 0) line.append(colors[gameState.nextBlock.color - 1]).append("  ").append("\u001B[0m");
+                    else line.append("  ");
+                }
+                sidebarLines.add(line.toString());
+            }
+        }
+
         sidebarLines.add("Holding:");
         sidebarLines.add("");
         if (gameState.holdingBlock != null) {

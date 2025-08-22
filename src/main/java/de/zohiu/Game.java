@@ -74,6 +74,7 @@ public class Game {
 
         private List<List<Integer>> board;
         public Block currentBlock;
+        public Block nextBlock;
         public Block holdingBlock;
 
         private State(int width, int height) {
@@ -85,11 +86,13 @@ public class Game {
                 board.add(new ArrayList<>(Collections.nCopies(width, 0)));
             }
 
+            nextBlock = new Block(this, Shape.random());
             spawnBlock();
         }
 
         public final boolean spawnBlock() {
-            currentBlock = new Block(this, Shape.random());
+            currentBlock = nextBlock;
+            nextBlock = new Block(this, Shape.random());
             return false;
         }
 
