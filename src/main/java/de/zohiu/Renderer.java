@@ -36,7 +36,9 @@ class Renderer {
     public void update(Game.State gameState) {
         // Sidebar
         Queue<String> sidebarLines = new LinkedList<>();
+        sidebarLines.add("Level " + gameState.level);
         sidebarLines.add("Score: " + gameState.score);
+        sidebarLines.add("Line clears: " + gameState.lineClears);
 
         sidebarLines.add("Next:");
         sidebarLines.add("");

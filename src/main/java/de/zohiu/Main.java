@@ -14,6 +14,8 @@ public class Main {
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private static ScheduledFuture<?> currentTask;
 
+    public static final int baseInterval = 250;
+
     public static void main(String[] args) {
         game.setGameOverCallback(() -> {
             input.stop();
@@ -22,7 +24,7 @@ public class Main {
             System.exit(0);
         });
 
-        scheduleTask(250);
+        scheduleTask(baseInterval);
     }
 
     private static void scheduleTask(long interval) {

@@ -74,6 +74,9 @@ public class Game {
         public int score;
         public int level;
 
+        public int lineClears;
+        private int lineClearsSinceLastLevel;
+
         private List<List<Integer>> board;
         public Block currentBlock;
         public Block nextBlock;
@@ -84,6 +87,7 @@ public class Game {
             boardWidth = width;
             score = 0;
             level = 1;
+            lineClears = 0;
 
             board = new ArrayList<>();
             for (int i = 0; i < height; i++) {
@@ -118,6 +122,14 @@ public class Game {
                     }
                 }
             } while (rowCleared);
+
+            lineClears += rowClearAmount;
+            lineClearsSinceLastLevel += rowClearAmount;
+            while (lineClearsSinceLastLevel >= 10) {
+                level++;
+                lineClearsSinceLastLevel -= 10;
+                Main.changeInterval(Main.baseInterval - (level * 25L));
+            }
 
             if (rowClearAmount > 0) {
                 score += Game.lineClearScores[rowClearAmount - 1] * level;
